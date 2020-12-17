@@ -119,7 +119,7 @@ public class WebSocketClient {
         do {
             try makeConnection()
         } catch {
-            throw WebSocketClientConnectionError.WebSocketClientConnectionFailed
+            throw error
         }
     }
 
@@ -247,7 +247,12 @@ public class WebSocketClient {
         let bootstrap = ClientBootstrap(group: group)
             .channelOption(ChannelOptions.socket(SocketOptionLevel(SOL_SOCKET), SO_REUSEPORT), value: 1)
             .channelInitializer(self.clientChannelInitializer)
-        _ = try bootstrap.connect(host: self.host, port: self.port).wait()
+        do {
+            _ = try bootstrap.connect(host: self.host, port: self.port).wait()
+        }
+        catch {
+            throw error
+        }
         self.upgraded.wait()
     }
 
