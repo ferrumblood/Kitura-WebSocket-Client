@@ -266,7 +266,7 @@ public class WebSocketClient {
         return channel.pipeline.addHTTPClientHandlers(withClientUpgrade: config).flatMap { _ in
             return channel.pipeline.addHandler(httpHandler).flatMap { _ in
                 if self.enableSSL {
-                    let tlsConfig = TLSConfiguration.forClient()
+                    let tlsConfig = TLSConfiguration.forClient(certificateVerification: .none)
                     let sslContext =  try! NIOSSLContext(configuration: tlsConfig)
                     let sslHandler = try! NIOSSLClientHandler(context: sslContext, serverHostname: self.host)
                     return channel.pipeline.addHandler(sslHandler, position: .first)
